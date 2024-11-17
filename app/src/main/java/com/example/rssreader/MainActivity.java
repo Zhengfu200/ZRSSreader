@@ -14,6 +14,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -35,8 +37,10 @@ public class MainActivity extends AppCompatActivity {
 
     private EditText rssUrl;
     private  Button btnFetch;
+    private Button btnPreset1, btnPreset2, btnPreset3;
     private  RecyclerView recyclerView;
     private RssAdapter rssAdapter;
+    private LinearLayout buttonLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,14 +50,41 @@ public class MainActivity extends AppCompatActivity {
         rssUrl = findViewById(R.id.rssUrl);
         btnFetch = findViewById(R.id.btnFetch);
         recyclerView = findViewById(R.id.recyclerView);
+        btnPreset1 = findViewById(R.id.btnPreset1);
+        btnPreset2 = findViewById(R.id.btnPreset2);
+        btnPreset3 = findViewById(R.id.btnPreset3);
+        buttonLayout = findViewById(R.id.buttonLayout);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        btnPreset1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                rssUrl.setText("https://plink.anyfeeder.com/zaobao/realtime/china");
+            }
+        });
+
+        btnPreset2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                rssUrl.setText("https://plink.anyfeeder.com/people");
+            }
+        });
+
+        btnPreset3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                rssUrl.setText("https://plink.anyfeeder.com/infzm/news");
+            }
+        });
+
 
         btnFetch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String url = rssUrl.getText().toString().trim();
                 fetchRssFeed(url);
+                buttonLayout.setVisibility(View.GONE);  // 隐藏预设按钮布局
             }
         });
     }
@@ -78,6 +109,7 @@ public class MainActivity extends AppCompatActivity {
                             Intent intent = new Intent(MainActivity.this, DetailActivity.class);
                             intent.putExtra("title", item.title);
                             intent.putExtra("description", item.description);
+                            intent.putExtra("link", item.link);
                             startActivity(intent);
                         }
                     });
@@ -116,5 +148,8 @@ public class MainActivity extends AppCompatActivity {
 
         @Element(name = "description" , required = false)
         public String description;
+
+        @Element(name = "link", required = false)
+        public  String link;
     }
 }
